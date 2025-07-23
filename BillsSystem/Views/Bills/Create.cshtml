@@ -1,0 +1,74 @@
+﻿@model BillsSystem.Models.Bill
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{
+    ViewData["Title"] = "Create Bill";
+}
+
+<h2>Create Bill</h2>
+
+<form asp-action="Create" method="post">
+
+    @foreach (var state in ViewData.ModelState.Values)
+    {
+        foreach (var error in state.Errors)
+        {
+            <div class="text-danger">@error.ErrorMessage</div>
+        }
+    }
+    <div class="form-group">
+        <label asp-for="BillNumber" class="control-label"></label>
+        <input asp-for="BillNumber" class="form-control" />
+        <span asp-validation-for="BillNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Date" class="control-label"></label>
+        <input asp-for="Date" class="form-control" type="date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Total" class="control-label"></label>
+        <input asp-for="Total" class="form-control" />
+        <span asp-validation-for="Total" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AmountPaid" class="control-label"></label>
+        <input asp-for="AmountPaid" class="form-control" />
+        <span asp-validation-for="AmountPaid" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RemainingAmount" class="control-label"></label>
+        <input asp-for="RemainingAmount" class="form-control" />
+        <span asp-validation-for="RemainingAmount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Discount" class="control-label"></label>
+        <input asp-for="Discount" class="form-control" />
+        <span asp-validation-for="Discount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CustomerId" class="control-label">Customer</label>
+        <select asp-for="CustomerId" class="form-control"
+                asp-items="@(new SelectList(ViewBag.Customers, "Id", "Name"))">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

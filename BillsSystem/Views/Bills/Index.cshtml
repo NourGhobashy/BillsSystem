@@ -1,0 +1,63 @@
+﻿@model IEnumerable<BillsSystem.Models.Bill>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{
+    var selectedId = ViewBag.SelectedCustomerId != null ? ViewBag.SelectedCustomerId.ToString() : "";
+}
+<form method="get" asp-action="Index" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label for="customerId" class="form-label">Filter by Customer</label>
+        <select id="customerId" name="customerId" class="form-select">
+            <option value="">-- All Customers --</option>
+            @foreach (var customer in (IEnumerable<SelectListItem>)ViewBag.Customers)
+            {
+                <option value="@customer.Value" selected="@(selectedId == customer.Value ? "selected" : null)">
+                    @customer.Text
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+
+
+
+<h2>Bills</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Bill Number</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Amount Paid</th>
+            <th>Remaining</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in Model)
+        {
+            <tr>
+                <td>@bill.BillNumber</td>
+                <td>@bill.Date.ToShortDateString()</td>
+                <td>@bill.Total</td>
+                <td>@bill.AmountPaid</td>
+                <td>@bill.RemainingAmount</td>
+                <td>
+                    <a href="@Url.Action("Details", "Bills", new { id = bill.Id })">Details</a> |
+                    <a href="@Url.Action("Edit", "Bills", new { id = bill.Id })">Edit</a> |
+                    <a href="@Url.Action("Delete", "Bills", new { id = bill.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Bills")" class="btn btn-primary">Create New Bill</a>

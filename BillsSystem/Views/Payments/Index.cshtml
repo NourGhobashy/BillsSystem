@@ -1,0 +1,27 @@
+﻿@model IEnumerable<BillsSystem.Models.Payment>
+
+<h2>قائمة المدفوعات</h2>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>رقم الدفع</th>
+            <th>المبلغ</th>
+            <th>تاريخ الدفع</th>
+            <th>رقم الفاتورة</th>
+            <th>اسم العميل (إن وجد)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in Model)
+        {
+            <tr>
+                <td>@payment.Id</td>
+                <td>@payment.Amount.ToString("C")</td>
+                <td>@payment.PaymentDate.ToShortDateString()</td>
+                <td>@payment.BillId</td>
+                <td>@payment.Bill?.CreatedByUser?.UserName ?? "غير محدد"</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,43 @@
+﻿@model BillsSystem.Models.Payment
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{
+    ViewData["Title"] = "Add Payment";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-3">Add Payment for Bill <span class="text-dark">#@ViewBag.BillNumber</span></h2>
+    <hr />
+
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="BillId" value="@ViewBag.BillId" />
+
+        <div class="mb-3">
+            <label asp-for="Amount" class="form-label fw-bold">Amount</label>
+            <input asp-for="Amount" class="form-control" type="number" step="0.01" required />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PaymentDate" class="form-label fw-bold">Payment Date</label>
+            <input asp-for="PaymentDate" class="form-control" type="date" required />
+            <span asp-validation-for="PaymentDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label fw-bold">Notes (Optional)</label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Add Payment</button>
+        <a asp-controller="Bills" asp-action="Details" asp-route-id="@ViewBag.BillId" class="btn btn-secondary ms-2">Back to Bill</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

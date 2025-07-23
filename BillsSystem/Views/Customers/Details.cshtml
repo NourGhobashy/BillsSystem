@@ -1,0 +1,66 @@
+﻿@model BillsSystem.Models.Customer
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<h2>Customer Details</h2>
+
+<div class="mb-4">
+    <h4>Customer Info</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        @* لو فيه بيانات إضافية زي الهاتف أو الإيميل *@
+        @* 
+        <dt class="col-sm-2">Phone</dt>
+        <dd class="col-sm-10">@Model.Phone</dd>
+
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd> 
+        *@
+    </dl>
+</div>
+
+<h4>Customer Bills</h4>
+<a asp-action="Index" class="btn btn-secondary">Back to Customer List</a>
+
+
+@if (Model.Bills != null && Model.Bills.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Bill Number</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Remaining</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in Model.Bills)
+            {
+                <tr>
+                    <td>@bill.BillNumber</td>
+                    <td>@bill.Date.ToShortDateString()</td>
+                    <td>@bill.Total</td>
+                    <td>@bill.AmountPaid</td>
+                    <td>@bill.RemainingAmount</td>
+                    <td>
+                        <a asp-controller="Bills" asp-action="Details" asp-route-id="@bill.Id" class="btn btn-info btn-sm">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">No bills found for this customer.</p>
+}

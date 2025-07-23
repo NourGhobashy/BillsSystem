@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-3">مرحبًا بك في نظام إدارة الفواتير</h2>
+    <p class="lead text-muted mb-4">
+        يتيح لك هذا النظام إدارة الفواتير، تتبع المدفوعات، إضافة المنتجات، والتعامل مع بيانات العملاء بكل سهولة وفعالية.
+    </p>
+
+    <div class="row">
+        <!-- الفواتير -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm text-center border-0">
+                <div class="card-body">
+                    <i class="fas fa-file-invoice-dollar fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">الفواتير</h5>
+                    <p class="card-text">عرض وإنشاء وتتبع الفواتير.</p>
+                    <a asp-controller="Bills" asp-action="Index" class="btn btn-outline-primary btn-sm">اذهب للفواتير</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- العملاء -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm text-center border-0">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">العملاء</h5>
+                    <p class="card-text">إدارة بيانات العملاء وفواتيرهم.</p>
+                    <a asp-controller="Customers" asp-action="Index" class="btn btn-outline-success btn-sm">اذهب للعملاء</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- المنتجات -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm text-center border-0">
+                <div class="card-body">
+                    <i class="fas fa-boxes fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">المنتجات</h5>
+                    <p class="card-text">عرض وتعديل المنتجات والأسعار.</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-outline-warning btn-sm">اذهب للمنتجات</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- المدفوعات -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm text-center border-0">
+                <div class="card-body">
+                    <i class="fas fa-credit-card fa-3x text-danger mb-3"></i>
+                    <h5 class="card-title">المدفوعات</h5>
+                    <p class="card-text">سجل المدفوعات الخاصة بالفواتير.</p>
+                    <a asp-controller="Payments" asp-action="Index" class="btn btn-outline-danger btn-sm">اذهب للمدفوعات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

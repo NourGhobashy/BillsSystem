@@ -1,0 +1,228 @@
+@model BillsSystem.Models.Bill
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{
+    ViewData["Title"] = "Bill Details";
+}
+
+<h2>Bill Details</h2>
+
+<div>
+    <h4>Bill Information</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Bill Number</dt>
+        <dd class="col-sm-10">@Model.BillNumber</dd>
+
+        <dt class="col-sm-2">Date</dt>
+        <dd class="col-sm-10">@Model.Date.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Total</dt>
+        <dd class="col-sm-10" id="bill-total">@Model.Total.ToString("0.00")</dd>
+
+        <dt class="col-sm-2">Paid</dt>
+        <dd class="col-sm-10">@Model.AmountPaid.ToString("0.00")</dd>
+
+        <dt class="col-sm-2">Remaining</dt>
+        <dd class="col-sm-10" id="bill-remaining">@Model.RemainingAmount.ToString("0.00")</dd>
+
+        <dt class="col-sm-2">Discount</dt>
+        <dd class="col-sm-10">@Model.Discount.ToString("0.00")</dd>
+
+        <dt class="col-sm-2">Net Amount</dt>
+        <dd class="col-sm-10" id="bill-net">@Model.NetAmount.ToString("0.00")</dd>
+
+        <dt class="col-sm-2">Customer</dt>
+        <dd class="col-sm-10">@Model.Customer?.Name</dd>
+    </dl>
+
+    <h4 class="mt-4">Bill Items</h4>
+    <table class="table table-bordered table-striped" id="items-table">
+        <thead class="table-light">
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.BillItems)
+            {
+                <tr id="item-@item.Id">
+                    <td>@(item.Product != null ? item.Product.Name : item.ItemName)</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice</td>
+                    <td>@item.Total</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm delete-item" data-id="@item.Id" data-bill="@Model.Id">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Add New Item</h4>
+    <form id="addItemForm">
+        <input type="hidden" name="BillId" value="@Model.Id" />
+
+        <div class="form-row">
+            <!-- ?????? ?????? -->
+            <div class="form-group col-md-3">
+                <label for="productSelect">Product</label>
+                <select id="productSelect" name="ProductId" class="form-select">
+                    <option value="">-- Select Product --</option>
+                    @foreach (var product in ViewBag.Products as List<BillsSystem.Models.Product>)
+                    {
+                        <option value="@product.Id" data-name="@product.Name" data-price="@product.Price">
+                            @product.Name
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- ??? ?????? -->
+            <div class="form-group col-md-3">
+                <label>Item Name</label>
+                <input name="ItemName" id="itemName" class="form-control" required />
+            </div>
+
+            <!-- ?????? -->
+            <div class="form-group col-md-2">
+                <label>Quantity</label>
+                <input name="Quantity" type="number" class="form-control" required />
+            </div>
+
+            <!-- ????? -->
+            <div class="form-group col-md-2">
+                <label>Unit Price</label>
+                <input name="UnitPrice" id="unitPrice" type="number" step="0.01" class="form-control" required />
+            </div>
+
+            <!-- ?? ??????? -->
+            <div class="form-group col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-success btn-block">Add Item</button>
+            </div>
+        </div>
+    </form>
+
+
+    <h4 class="mt-5">Payments</h4>
+    @if (Model.Payments != null && Model.Payments.Any())
+    {
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payment in Model.Payments)
+                {
+                    <tr>
+                        <td>@payment.Amount.ToString("0.00")</td>
+                        <td>@payment.PaymentDate.ToShortDateString()</td>
+                        <td>@payment.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No payments recorded for this bill.</p>
+    }
+
+    <p class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a class="btn btn-info" asp-controller="Payments" asp-action="Create" asp-route-billId="@Model.Id">Add Payment</a>
+    </p>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // ??? ?????? ????? ??? ????? ????? ?????? ????????
+            $('#productSelect').change(function () {
+                const selected = $(this).find('option:selected');
+                const name = selected.data('name');
+                const price = selected.data('price');
+
+                if (selected.val()) {
+                    $('#itemName').val(name);
+                    $('input[name="UnitPrice"]').val(price);
+                } else {
+                    $('#itemName').val('');
+                    $('input[name="UnitPrice"]').val('');
+                }
+            });
+
+            // ????? ???? ???? ????????
+            $('#addItemForm').submit(function (e) {
+                e.preventDefault();
+                const form = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddItem")',
+                    data: form.serialize(),
+                    success: function (result) {
+                        $('#items-table tbody').append(`
+                            <tr id="item-${result.id}">
+                                <td>${result.itemName}</td>
+                                <td>${result.quantity}</td>
+                                <td>${result.unitPrice}</td>
+                                <td>${result.total}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-item" data-id="${result.id}" data-bill="${result.billId}">Delete</button>
+                                </td>
+                            </tr>
+                        `);
+
+                        $('#bill-total').text(result.billTotal.toFixed(2));
+                        $('#bill-net').text(result.netAmount.toFixed(2));
+                        $('#bill-remaining').text(result.remaining.toFixed(2));
+
+                        form.trigger('reset');
+                    },
+                    error: function () {
+                        alert("Failed to add item.");
+                    }
+                });
+            });
+
+            // ??? ???? ?? ????????
+            $(document).on('click', '.delete-item', function () {
+                const itemId = $(this).data('id');
+                const billId = $(this).data('bill');
+
+                if (confirm("Are you sure you want to delete this item?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/Bills/DeleteItem',
+                        data: { id: itemId, billId: billId },
+                        success: function (result) {
+                            $('#item-' + itemId).remove();
+                            $('#bill-total').text(result.billTotal.toFixed(2));
+                            $('#bill-net').text(result.netAmount.toFixed(2));
+                            $('#bill-remaining').text(result.remaining.toFixed(2));
+                        },
+                        error: function () {
+                            alert("Failed to delete item.");
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+}
+
