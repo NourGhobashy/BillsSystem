@@ -27,17 +27,32 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <!-- روابط عامة -->
-                    <ul class="navbar-nav flex-grow-1">
+                    
+                        <ul class="navbar-nav flex-grow-1">
+                            @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                                        ViewContext.RouteData.Values["action"]?.ToString() == "Index"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                            }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-controller="Company" asp-action="Index">Companies</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Bills" asp-action="Index">Bills</a>
                         </li>
+                        <li class="nav-item">
+                            <form asp-controller="Profile" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="nav-link btn btn-link text-danger p-0" style="border: none;">Logout</button>
+                            </form>
+                        </li>
                     </ul>
+
 
                     <!-- حساب المستخدم -->
                     <ul class="navbar-nav">

@@ -28,7 +28,17 @@
             <!-- Sidebar -->
             <div class="col-md-2 bg-light vh-100 pt-4 shadow-sm border-end">
                 <ul class="nav flex-column fw-semibold">
-                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">🏠 الرئيسية</a></li>
+                    
+                        @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                                ViewContext.RouteData.Values["action"]?.ToString() == "Index"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                        }
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Company" asp-action="Index">Companies</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Bills" asp-action="Index">🧾 الفواتير</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Customers" asp-action="Create">👥 العملاء</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Index">📦 المنتجات</a></li>
@@ -36,6 +46,11 @@
                     <li class="nav-item"><a class="nav-link" asp-controller="Profile" asp-action="Index">👤 الملف الشخصي</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Profile" asp-action="Logout">🚪 تسجيل الخروج</a></li>
                 </ul>
+                <li class="nav-item">
+                    <form asp-controller="Profile" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="nav-link btn btn-link text-danger p-0" style="border: none;">Logout</button>
+                    </form>
+                </li>
             </div>
 
             <!-- Main Content -->

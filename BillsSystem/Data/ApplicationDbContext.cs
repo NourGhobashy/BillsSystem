@@ -17,6 +17,7 @@ namespace BillsSystem.MVC.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<Unit> Units { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
